@@ -48,3 +48,17 @@
 ├── 20170331
 ...
 ```
+
+## 2 使用方法
+
+```bash
+git clone https://github.com/kinggreenhall/stock-prediction.git
+
+cd stock-prediction
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 数据预处理
+python -m utils.data_utils
+```
