@@ -1,0 +1,3 @@
+datas:
+  train_path: /media/htb/data/dataset/nlp/stock-data/train_data
+  test_path: /media/htb/data/dataset/nlp/stock-data/test_data
