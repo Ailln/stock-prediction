@@ -59,6 +59,15 @@ cd stock-prediction
 # 安装依赖
 pip install -r requirements.txt
 
+# 修改配置，替换成你的数据路径
+vi config.yaml
+
 # 数据预处理
 python -m utils.data_utils
 ```
+
+## 3 其他
+
+Q: 数据在哪里？
+
+A: 好问题！别急，先等等。
