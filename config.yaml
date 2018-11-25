@@ -1,3 +1,9 @@
 datas:
-  train_path: /media/htb/data/dataset/nlp/stock-data/train_data
-  test_path: /media/htb/data/dataset/nlp/stock-data/test_data
+  origin_train_path: /media/htb/data/dataset/nlp/stock-data/train_data
+  origin_test_path: /media/htb/data/dataset/nlp/stock-data/test_data
+  generate_train_path: ./datas/train_data.csv
+  generate_validate_path: ./datas/validate_data.csv
+  generate_test_path: ./datas/test_data.csv
+
+  is_regenerate_train_and_validate_data: 0
+  split_validate_size: 0.3
