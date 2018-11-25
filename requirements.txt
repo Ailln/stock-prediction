@@ -1,3 +1,4 @@
+progressbar
 scikit-learn
 pandas
 PyYAML

@@ -64,8 +64,8 @@ pip install -r requirements.txt
 # 修改配置，替换成你的数据路径
 vi config.yaml
 
-# 数据预处理
-python -m utils.data_utils
+# 运行
+python -m run.sklearn_linear_model
 ```
 
 ## 3 其他

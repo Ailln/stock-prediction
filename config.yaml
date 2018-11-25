@@ -4,6 +4,9 @@ datas:
   generate_train_path: ./datas/train_data.csv
   generate_validate_path: ./datas/validate_data.csv
   generate_test_path: ./datas/test_data.csv
+  model_path: ./save
 
-  is_regenerate_train_and_validate_data: 0
+  is_regenerate_train_and_validate_data: 1
   split_validate_size: 0.3
+
+is_debug: 0
