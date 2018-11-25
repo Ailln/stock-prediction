@@ -72,14 +72,16 @@ python -m run.sklearn
 
 | 序号 | 模型类型 | 模型名称 | MSE | 日期 |
 | :-: | :- | :- | :- | :- |
-| 1 | linear | LinearRegression | <font color=orange>0.0003111997484069403</font> | 2018.11.25 23:23 |
+| 1 | linear | LinearRegression | **0.0003111997484069403** | 2018.11.25 23:23 |
 | 2 | linear | HuberRegressor | 0.00031623554288487003 | 2018.11.26 01:35 |
 | 3 | linear | SGDRegressor | 0.0003137441739156157 | 2018.11.26 01:36 |
 | 4 | ensemble | AdaBoostRegressor | 0.0006151271633934587 | 2018.11.26 01:20 |
-| 5 | ensemble | GradientBoostingRegressor | <font color=red>0.0003110028137168617</font> | 2018.11.26 01:21 |
+| 5 | ensemble | GradientBoostingRegressor | **0.0003110028137168617** | 2018.11.26 01:21 |
 | 6 | ensemble | RandomForestRegressor | 0.00036124471790637946 | 2018.11.26 01:33 |
 | 7 | ensemble | BaggingRegressor | 0.00036106425975312523 | 2018.11.26 01:48 |
 | 8 | ensemble | ExtraTreesRegressor | 0.00035946545498117974 | 2018.11.26 01:34 |
+
+注：加粗的 MSE 是前 2 名。
 
 ## 4 其他
 
