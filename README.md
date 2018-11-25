@@ -61,27 +61,29 @@ cd stock-prediction
 # 安装依赖
 pip install -r requirements.txt
 
-# 修改配置
+# 自定义你的配置
 vi config.yaml
 
-# 每次运行需要手动替换配置中的 model_name
+# 每次运行需要手动替换配置中的 $model_name
 python -m run.sklearn
 ```
 
 ## 3 结果
 
-| 序号 | 模型类型 | 模型名称 | MSE | 日期 |
+| 序号 | 模型类型 | 模型名称 | MSE(10**-5) | 日期 |
 | :-: | :- | :- | :- | :- |
-| 1 | linear | LinearRegression | **0.0003111997484069403** | 2018.11.25 23:23 |
-| 2 | linear | HuberRegressor | 0.00031623554288487003 | 2018.11.26 01:35 |
-| 3 | linear | SGDRegressor | 0.0003137441739156157 | 2018.11.26 01:36 |
-| 4 | ensemble | AdaBoostRegressor | 0.0006151271633934587 | 2018.11.26 01:20 |
-| 5 | ensemble | GradientBoostingRegressor | **0.0003110028137168617** | 2018.11.26 01:21 |
-| 6 | ensemble | RandomForestRegressor | 0.00036124471790637946 | 2018.11.26 01:33 |
-| 7 | ensemble | BaggingRegressor | 0.00036106425975312523 | 2018.11.26 01:48 |
-| 8 | ensemble | ExtraTreesRegressor | 0.00035946545498117974 | 2018.11.26 01:34 |
+| 1 | linear | SGDRegressor | **31.3744** | 2018.11.26 01:36 |
+| 2 | linear | HuberRegressor | 31.6236 | 2018.11.26 01:35 |
+| 3 | linear | LinearRegression | **31.1200** | 2018.11.25 23:23 |
+| 4 | svm | SVR | 87.8340 | 2018.11.26 04:25 |
+| 5 | svm | LinearSVR | 37.6120 | 2018.11.26 02:36 |
+| 6 | ensemble | BaggingRegressor | 36.1064 | 2018.11.26 01:48 |
+| 7 | ensemble | AdaBoostRegressor | 61.5127 | 2018.11.26 01:20 |
+| 8 | ensemble | ExtraTreesRegressor | 35.9465 | 2018.11.26 01:34 |
+| 9 | ensemble | RandomForestRegressor | 36.1245 | 2018.11.26 01:33 |
+| 10 | ensemble | GradientBoostingRegressor | **31.1003** | 2018.11.26 01:21 |
 
-注：加粗的 MSE 是前 2 名。
+注：加粗的 MSE 是前 3 名。
 
 ## 4 其他
 

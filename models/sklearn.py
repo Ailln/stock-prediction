@@ -1,5 +1,6 @@
 from sklearn import linear_model
 from sklearn import ensemble
+from sklearn import svm
 
 
 def sklearn_model(model_name):
@@ -11,6 +12,8 @@ def sklearn_model(model_name):
         "AdaBoostRegressor": ensemble.AdaBoostRegressor(),
         "RandomForestRegressor": ensemble.RandomForestRegressor(),
         "BaggingRegressor": ensemble.BaggingRegressor(),
-        "ExtraTreesRegressor": ensemble.ExtraTreesRegressor()
+        "ExtraTreesRegressor": ensemble.ExtraTreesRegressor(),
+        "SVR": svm.SVR(),
+        "LinearSVR": svm.LinearSVR()
     }
     return model_dict[model_name]
