@@ -11,5 +11,17 @@ datas:
 models:
     model_path: ./save
     model_name: LinearRegression
+    all_model_name: [
+        "SGDRegressor",
+        "HuberRegressor",
+        "LinearRegression",
+        "SVR",
+        "LinearSVR",
+        "BaggingRegressor",
+        "AdaBoostRegressor",
+        "ExtraTreesRegressor",
+        "RandomForestRegressor",
+        "GradientBoostingRegressor"
+    ]
 
-is_debug: 0
+is_debug: False

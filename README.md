@@ -70,18 +70,18 @@ python -m run.sklearn
 
 ## 3 结果
 
-| 序号 | 模型类型 | 模型名称 | MSE(10e-5) | 日期 |
+| 序号 | 模型类型 | 模型名称 | MSE(10e-5) | R-Square |
 | :-: | :- | :- | :- | :- |
-| 1 | linear | SGDRegressor | **31.3744** | 2018.11.26 01:36 |
-| 2 | linear | HuberRegressor | 31.6236 | 2018.11.26 01:35 |
-| 3 | linear | LinearRegression | **31.1200** | 2018.11.25 23:23 |
-| 4 | svm | SVR | 87.8340 | 2018.11.26 04:25 |
-| 5 | svm | LinearSVR | 37.6120 | 2018.11.26 02:36 |
-| 6 | ensemble | BaggingRegressor | 36.1064 | 2018.11.26 01:48 |
-| 7 | ensemble | AdaBoostRegressor | 61.5127 | 2018.11.26 01:20 |
-| 8 | ensemble | ExtraTreesRegressor | 35.9465 | 2018.11.26 01:34 |
-| 9 | ensemble | RandomForestRegressor | 36.1245 | 2018.11.26 01:33 |
-| 10 | ensemble | GradientBoostingRegressor | **31.1003** | 2018.11.26 01:21 |
+| 1 | linear | SGDRegressor | **31.3744** | -56.071693488164335 |
+| 2 | linear | HuberRegressor | 31.6236 | -58.36478825409345 |
+| 3 | linear | LinearRegression | **31.1200** | -58.45826238809132 |
+| 4 | svm | SVR | 87.8340 | -6.084557170665203 |
+| 5 | svm | LinearSVR | 37.6120 | -3.9888091461730113 |
+| 6 | ensemble | BaggingRegressor | 36.1064 | -5.531679641009311 |
+| 7 | ensemble | AdaBoostRegressor | 61.5127 | -22.69646739154649 |
+| 8 | ensemble | ExtraTreesRegressor | 35.9465 | -5.649378952571348 |
+| 9 | ensemble | RandomForestRegressor | 36.1245 | -5.508196667668156 |
+| 10 | ensemble | GradientBoostingRegressor | **31.1003** | -77.25513916584696 |
 
 注：加粗的 MSE 是前 3 名。
 
