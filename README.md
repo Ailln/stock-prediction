@@ -49,7 +49,18 @@
 ...
 ```
 
-## 2 使用方法
+## 2 预处理
+
+### 2.1 去极值
+
+> 如果数据服从正态分布，在3σ原则下，异常值被定义为与平均值的偏差超过了3倍标准差的值。
+> 这是因为，在正态分布的假设下，具体平均值3倍标准差之外的值出现的概率低于0.003，属于极个别的小概率事件。
+
+使用上述方法去极值前后对比图如下：
+
+![](./src/20130201_non_ts_remove_extreme_value.png)
+
+## 3 使用方法
 
 本项目使用的 Python 版本必须大于 3.6.0，环境配置参考[这里](https://www.v2ai.cn/linux/2018/04/29/LX-2.html)。
 
@@ -68,24 +79,24 @@ vi config.yaml
 python -m run.sklearn
 ```
 
-## 3 结果
+## 4 结果
 
-| 序号 | 模型类型 | 模型名称 | MSE(10e-5) | R-Square |
-| :-: | :- | :- | :- | :- |
-| 1 | linear | SGDRegressor | **31.3744** | -56.071693488164335 |
-| 2 | linear | HuberRegressor | 31.6236 | -58.36478825409345 |
-| 3 | linear | LinearRegression | **31.1200** | -58.45826238809132 |
-| 4 | svm | SVR | 87.8340 | -6.084557170665203 |
-| 5 | svm | LinearSVR | 37.6120 | -3.9888091461730113 |
-| 6 | ensemble | BaggingRegressor | 36.1064 | -5.531679641009311 |
-| 7 | ensemble | AdaBoostRegressor | 61.5127 | -22.69646739154649 |
-| 8 | ensemble | ExtraTreesRegressor | 35.9465 | -5.649378952571348 |
-| 9 | ensemble | RandomForestRegressor | 36.1245 | -5.508196667668156 |
-| 10 | ensemble | GradientBoostingRegressor | **31.1003** | -77.25513916584696 |
+| 序号 | 模型类型 | 模型名称 | 预处理 | MSE(10e-5) | R-Square | 预处理
+| :-: | :- | :- | :- | :- | :- |
+| 1 | linear | SGDRegressor | 否 | **31.3744** | -56.071693488164335 |
+| 2 | linear | HuberRegressor | 否 | 31.6236 | -58.36478825409345 |
+| 3 | linear | LinearRegression | 否 | **31.1200** | -58.45826238809132 |
+| 4 | svm | SVR | 否 | 87.8340 | -6.084557170665203 |
+| 5 | svm | LinearSVR | 否 | 37.6120 | -3.9888091461730113 |
+| 6 | ensemble | BaggingRegressor | 否 | 36.1064 | -5.531679641009311 |
+| 7 | ensemble | AdaBoostRegressor | 否 | 61.5127 | -22.69646739154649 |
+| 8 | ensemble | ExtraTreesRegressor | 否 | 35.9465 | -5.649378952571348 |
+| 9 | ensemble | RandomForestRegressor | 否 | 36.1245 | -5.508196667668156 |
+| 10 | ensemble | GradientBoostingRegressor | 否 | **31.1003** | -77.25513916584696 |
 
 注：加粗的 MSE 是前 3 名。
 
-## 4 其他
+## 5 其他
 
 Q: 数据在哪里？
 

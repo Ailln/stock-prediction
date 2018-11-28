@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import pandas as pd
+import seaborn as sns
+from pylab import plt
 from progressbar import ProgressBar
 
 
@@ -43,6 +45,7 @@ class DataUtils(object):
         validate_remove_key_list = ["id", "date", "y"]
         for remove_key in validate_remove_key_list:
             validate_header_list.remove(remove_key)
+
         validate_input_list = df_validate_data[validate_header_list].values
         validate_target_list = df_validate_data["y"].values
 
@@ -110,6 +113,27 @@ class DataUtils(object):
     def __get_mean_0_20(df_input, index_name):
         df_output = df_input.T[1:22].mean().to_frame(name=index_name+"_mean_0_20")
         return df_output
+
+    @staticmethod
+    def remove_extreme_value(df_input):
+        del df_input["date"]
+        del df_input["flag"]
+
+        fig, (ax0, ax1) = plt.subplots(2, 1, sharey="all")
+        ax0.set_title('BEFORE /20130201/non_ts.csv remove extreme value')
+        df_input.plot(ax=ax0)
+
+        desc = df_input.describe()
+        mean_add_3std = desc.loc['mean'] + 3 * desc.loc['std']
+        mean_minus_3std = desc.loc['mean'] - 3 * desc.loc['std']
+        df_input = df_input.where(df_input < mean_add_3std, mean_add_3std, axis=1)
+        df_input = df_input.where(df_input > mean_minus_3std, mean_minus_3std, axis=1)
+
+        ax1.set_title('AFTER /20130201/non_ts.csv remove extreme value')
+        df_input.plot(ax=ax1)
+        plt.show()
+
+        return df_input
 
 
 if __name__ == '__main__':
