@@ -10,7 +10,7 @@ datas:
 
 models:
     model_path: ./save
-    model_name: LinearRegression
+    model_name: GradientBoostingRegressor
     all_model_name: [
         "SGDRegressor",
         "HuberRegressor",

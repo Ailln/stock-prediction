@@ -81,20 +81,18 @@ python -m run.sklearn
 
 ## 4 结果
 
-| 序号 | 模型类型 | 模型名称 | 预处理 | MSE(10e-5) | R-Square |
-| :-: | :- | :- | :- | :- | :- |
-| 1 | linear | SGDRegressor | 否 | **31.3744** | -56.071693488164335 |
-| 2 | linear | HuberRegressor | 否 | 31.6236 | -58.36478825409345 |
-| 3 | linear | LinearRegression | 否 | **31.1200** | -58.45826238809132 |
-| 4 | svm | SVR | 否 | 87.8340 | -6.084557170665203 |
-| 5 | svm | LinearSVR | 否 | 37.6120 | -3.9888091461730113 |
-| 6 | ensemble | BaggingRegressor | 否 | 36.1064 | -5.531679641009311 |
-| 7 | ensemble | AdaBoostRegressor | 否 | 61.5127 | -22.69646739154649 |
-| 8 | ensemble | ExtraTreesRegressor | 否 | 35.9465 | -5.649378952571348 |
-| 9 | ensemble | RandomForestRegressor | 否 | 36.1245 | -5.508196667668156 |
-| 10 | ensemble | GradientBoostingRegressor | 否 | **31.1003** | -77.25513916584696 |
-
-注：加粗的 MSE 是前 3 名。
+| 序号 | 模型类型 | 模型名称 | 无预处理 R-Square | 去极值 R-Square |
+| :-: | :- | :- | :- | :- |
+| 1 | linear | SGDRegressor | -56.071693488164335 | -69.87167839014414 |
+| 2 | linear | HuberRegressor | -58.36478825409345 | -60.874178196778445 |
+| 3 | linear | LinearRegression | -58.45826238809132 | -59.13541192647471 |
+| 4 | svm | SVR | -6.084557170665203 | - |
+| 5 | svm | LinearSVR | -3.9888091461730113 | -9.662138879446077 |
+| 6 | ensemble | BaggingRegressor | -5.531679641009311 | -5.638545617341174 |
+| 7 | ensemble | AdaBoostRegressor | -22.69646739154649 | -16.359531596657455 |
+| 8 | ensemble | ExtraTreesRegressor | -5.649378952571348 | -5.6579625621729335 |
+| 9 | ensemble | RandomForestRegressor | -5.508196667668156 | -5.630369526654645 |
+| 10 | ensemble | GradientBoostingRegressor | -77.25513916584696 | -79.28055241687343 |
 
 ## 5 其他
 

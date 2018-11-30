@@ -79,6 +79,8 @@ class DataUtils(object):
 
     def __merge_date_data(self, date_path):
         df_non_ts = pd.read_csv(date_path / "non_ts.csv", index_col="id")
+        df_non_ts = self.remove_extreme_value(df_non_ts)
+
         df_y = pd.read_csv(date_path / "y.csv")
         del df_y["date"]
         merge_df = pd.merge(df_non_ts, df_y, on="id")
@@ -87,6 +89,8 @@ class DataUtils(object):
             ts_name = ts_path.name.split(".csv")[0]
             df_ts = pd.read_csv(ts_path, index_col="id")
             del df_ts["date"]
+
+            df_ts = self.remove_extreme_value(df_ts)
 
             df_ts_std = self.__get_std(df_ts, ts_name)
             merge_df = pd.merge(merge_df, df_ts_std, on="id")
@@ -116,22 +120,22 @@ class DataUtils(object):
 
     @staticmethod
     def remove_extreme_value(df_input):
-        del df_input["date"]
-        del df_input["flag"]
-
-        fig, (ax0, ax1) = plt.subplots(2, 1, sharey="all")
-        ax0.set_title('BEFORE /20130201/non_ts.csv remove extreme value')
-        df_input.plot(ax=ax0)
+        # del df_input["date"]
+        # del df_input["flag"]
+        #
+        # fig, (ax0, ax1) = plt.subplots(2, 1, sharey="all")
+        # ax0.set_title('BEFORE /20130201/non_ts.csv remove extreme value')
+        # df_input.plot(ax=ax0)
 
         desc = df_input.describe()
-        mean_add_3std = desc.loc['mean'] + 3 * desc.loc['std']
-        mean_minus_3std = desc.loc['mean'] - 3 * desc.loc['std']
+        mean_add_3std = desc.loc['mean'] + desc.loc['std'] * 3
+        mean_minus_3std = desc.loc['mean'] - desc.loc['std'] * 3
         df_input = df_input.where(df_input < mean_add_3std, mean_add_3std, axis=1)
         df_input = df_input.where(df_input > mean_minus_3std, mean_minus_3std, axis=1)
 
-        ax1.set_title('AFTER /20130201/non_ts.csv remove extreme value')
-        df_input.plot(ax=ax1)
-        plt.show()
+        # ax1.set_title('AFTER /20130201/non_ts.csv remove extreme value')
+        # df_input.plot(ax=ax1)
+        # plt.show()
 
         return df_input
 

@@ -65,5 +65,5 @@ def all_predict(config_path):
 
 if __name__ == '__main__':
     my_config_path = "./config.yaml"
-    # train(my_config_path)
-    all_predict(my_config_path)
+    train(my_config_path)
+    # all_predict(my_config_path)
