@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from pylab import plt
@@ -80,6 +81,7 @@ class DataUtils(object):
     def __merge_date_data(self, date_path):
         df_non_ts = pd.read_csv(date_path / "non_ts.csv", index_col="id")
         df_non_ts = self.remove_extreme_value(df_non_ts)
+        df_non_ts = self.standardization(df_non_ts)
 
         df_y = pd.read_csv(date_path / "y.csv")
         del df_y["date"]
@@ -91,6 +93,7 @@ class DataUtils(object):
             del df_ts["date"]
 
             df_ts = self.remove_extreme_value(df_ts)
+            df_ts = self.standardization(df_ts)
 
             df_ts_std = self.__get_std(df_ts, ts_name)
             merge_df = pd.merge(merge_df, df_ts_std, on="id")
@@ -137,6 +140,13 @@ class DataUtils(object):
         # df_input.plot(ax=ax1)
         # plt.show()
 
+        return df_input
+
+    # 标准化
+    @staticmethod
+    def standardization(df_input):
+        df_input = df_input.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
+        df_input = df_input.fillna(0)
         return df_input
 
 

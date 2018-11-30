@@ -15,8 +15,11 @@ class TestDataUtils(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_remove_extreme_value(self):
-        self.du.remove_extreme_value(self.test_df)
+    # def test_remove_extreme_value(self):
+    #     self.du.remove_extreme_value(self.test_df)
+
+    def test_standardization(self):
+        self.du.standardization(self.test_df)
 
 
 if __name__ == '__main__':
