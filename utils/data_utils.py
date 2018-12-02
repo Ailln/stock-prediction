@@ -63,15 +63,16 @@ class DataUtils(object):
             df_test_data = self.__generate_test_data()
         else:
             df_test_data = pd.read_csv(self.generate_test_path)
-
+        print(df_test_data.head())
         df_test_data = df_test_data.fillna(0)
         test_header_list = list(df_test_data.columns)
-        train_remove_key_list = ["date"]
+        train_remove_key_list = ["date", "id"]
         for remove_key in train_remove_key_list:
             test_header_list.remove(remove_key)
         test_input_list = df_test_data[test_header_list].values
-
-        return test_input_list
+        test_id_list = df_test_data["id"].values
+        test_date_list = df_test_data["date"].values
+        return test_input_list, test_id_list, test_date_list
 
     def __generate_train_and_validate_data(self):
         sorted_all_data_path = sorted(self.origin_train_path.glob("*"))
@@ -103,10 +104,10 @@ class DataUtils(object):
         df_test_data = pd.DataFrame()
         test_path_list = list(self.origin_test_path.glob("*"))
         for date_path in self.progress(test_path_list):
-            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")], ignore_index=True)
+            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")])
 
         print(">> save all data to /datas folder.")
-        df_test_data.to_csv(self.generate_test_path, index=False)
+        df_test_data.to_csv(self.generate_test_path)
         print(">> generate test data success !")
 
         return df_test_data
@@ -126,6 +127,7 @@ class DataUtils(object):
         for ts_path in date_path.glob("ts_*.csv"):
             ts_name = ts_path.name.split(".csv")[0]
             df_ts = pd.read_csv(ts_path, index_col="id")
+            date = df_ts["date"]
             del df_ts["date"]
 
             df_ts = self.remove_extreme_value(df_ts)
@@ -140,6 +142,7 @@ class DataUtils(object):
             df_ts_mean_0_20 = self.__get_mean_0_20(df_ts, ts_name)
             merge_df = pd.merge(merge_df, df_ts_mean_0_20, on="id")
 
+            merge_df["date"] = date
         return merge_df
 
     @staticmethod

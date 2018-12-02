@@ -108,4 +108,4 @@ venv.bak/
 
 # my
 /datas/*.csv
-/save/*.m
+/save/

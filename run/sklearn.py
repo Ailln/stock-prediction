@@ -1,3 +1,7 @@
+import os
+from pathlib import Path
+
+import pandas as pd
 from sklearn.externals import joblib
 from sklearn.metrics import r2_score
 
@@ -67,13 +71,34 @@ def test(config_path):
     config = config_utils.read_config(config_path)
     print(">> data processing...")
     du = data_utils.DataUtils(config)
-    test_input = du.get_test_data()
+    test_input, test_id, test_date = du.get_test_data()
+
     model_name = config["models"]["model_name"]
     model = joblib.load(config["models"]["model_path"] + f"/{model_name}.m")
     skm = model.sklearn_model(model_name)
     print(">> predict...\n")
     test_preds = skm.predict(test_input)
-    print(test_preds)
+
+    result = {}
+    date_set = set(test_date)
+    for date in date_set:
+        print(date)
+        save_dir = f"./save/test/{str(date)}"
+        save_path = save_dir + "/y.csv"
+        if not os.path.exists(save_dir):
+            os.mkdir(save_dir)
+
+        for date_item, id_item, value_item in zip(test_date, test_id, test_preds):
+            if date_item == date:
+                if date_item in result:
+                    result[date_item].append([date_item, id_item, value_item])
+                else:
+                    result[date_item] = [[date_item, id_item, value_item]]
+
+        sort_result = sorted(result[date], key=lambda x: x[2])
+        sort_result.reverse()
+        df_save = pd.DataFrame(sort_result[:1000], columns=["date", "id", "y"])
+        df_save.to_csv(save_path)
 
 
 if __name__ == '__main__':
