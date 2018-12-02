@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from pylab import plt
+from models import sklearn_model
 from progressbar import ProgressBar
 
 
@@ -114,8 +115,9 @@ class DataUtils(object):
 
     def __merge_date_data(self, date_path, data_type=None):
         df_non_ts = pd.read_csv(date_path / "non_ts.csv", index_col="id")
-        df_non_ts = self.remove_extreme_value(df_non_ts)
+        # df_non_ts = self.remove_extreme_value(df_non_ts)
         df_non_ts = self.standardization(df_non_ts)
+        self.neutralization(df_non_ts)
 
         if data_type == "test":
             merge_df = df_non_ts
@@ -130,7 +132,7 @@ class DataUtils(object):
             date = df_ts["date"]
             del df_ts["date"]
 
-            df_ts = self.remove_extreme_value(df_ts)
+            # df_ts = self.remove_extreme_value(df_ts)
             df_ts = self.standardization(df_ts)
 
             df_ts_std = self.__get_std(df_ts, ts_name)
@@ -143,6 +145,7 @@ class DataUtils(object):
             merge_df = pd.merge(merge_df, df_ts_mean_0_20, on="id")
 
             merge_df["date"] = date
+
         return merge_df
 
     @staticmethod
@@ -186,6 +189,26 @@ class DataUtils(object):
     def standardization(df_input):
         df_input = df_input.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
         df_input = df_input.fillna(0)
+        return df_input
+
+    # 中性化
+    @staticmethod
+    def neutralization(df_input):
+        flag_values = [[v] for v in df_input["flag"].values]
+        cols = list(df_input.columns)
+        model = sklearn_model.Model()
+        skm = model.sklearn_model("LinearRegression")
+        cols.remove("date")
+        cols.remove("flag")
+        for col in cols:
+            col_values = [[v] for v in df_input[col].values]
+            skm.fit(flag_values, col_values)
+            col_preds = skm.predict(flag_values)
+            res = []
+            for x, y in zip(col_values, col_preds):
+                res.append(x[0] - y[0])
+            df_input[col] = res
+
         return df_input
 
 
