@@ -63,7 +63,21 @@ def all_predict(config_path):
             print(e)
 
 
+def test(config_path):
+    config = config_utils.read_config(config_path)
+    print(">> data processing...")
+    du = data_utils.DataUtils(config)
+    test_input = du.get_test_data()
+    model_name = config["models"]["model_name"]
+    model = joblib.load(config["models"]["model_path"] + f"/{model_name}.m")
+    skm = model.sklearn_model(model_name)
+    print(">> predict...\n")
+    test_preds = skm.predict(test_input)
+    print(test_preds)
+
+
 if __name__ == '__main__':
     my_config_path = "./config.yaml"
-    train(my_config_path)
+    # train(my_config_path)
     # all_predict(my_config_path)
+    test(my_config_path)

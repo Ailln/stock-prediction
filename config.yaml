@@ -6,11 +6,12 @@ datas:
   generate_test_path: ./datas/test_data.csv
 
   is_regenerate_train_and_validate_data: 0
-  split_validate_size: 0.3
+  is_regenerate_test_data: 0
+  split_validate_size: 0
 
 models:
     model_path: ./save
-    model_name: GradientBoostingRegressor
+    model_name: BaggingRegressor
     all_model_name: [
         "SGDRegressor",
         "HuberRegressor",

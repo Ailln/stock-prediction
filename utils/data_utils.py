@@ -19,6 +19,7 @@ class DataUtils(object):
 
         self.is_regenerate_train_and_validate_data = self.config["datas"]["is_regenerate_train_and_validate_data"]
         self.split_validate_size = self.config["datas"]["split_validate_size"]
+        self.is_regenerate_test_data = self.config["datas"]["is_regenerate_test_data"]
 
         self.is_debug = self.config["is_debug"]
 
@@ -29,7 +30,8 @@ class DataUtils(object):
             df_train_data, df_validate_data = self.__generate_train_and_validate_data()
         else:
             df_train_data = pd.read_csv(self.generate_train_path)
-            df_validate_data = pd.read_csv(self.generate_validate_path)
+            if self.split_validate_size:
+                df_validate_data = pd.read_csv(self.generate_validate_path)
 
         if self.is_debug:
             print(f"\n>> train df head:\n\n{df_train_data.head()}")
@@ -42,15 +44,34 @@ class DataUtils(object):
         train_input_list = df_train_data[train_header_list].values
         train_target_list = df_train_data["y"].values
 
-        validate_header_list = list(df_validate_data.columns)
-        validate_remove_key_list = ["id", "date", "y"]
-        for remove_key in validate_remove_key_list:
-            validate_header_list.remove(remove_key)
+        if self.split_validate_size:
+            validate_header_list = list(df_validate_data.columns)
+            validate_remove_key_list = ["id", "date", "y"]
+            for remove_key in validate_remove_key_list:
+                validate_header_list.remove(remove_key)
 
-        validate_input_list = df_validate_data[validate_header_list].values
-        validate_target_list = df_validate_data["y"].values
+            validate_input_list = df_validate_data[validate_header_list].values
+            validate_target_list = df_validate_data["y"].values
+        else:
+            validate_input_list = []
+            validate_target_list = []
 
         return train_input_list, train_target_list, validate_input_list, validate_target_list
+
+    def get_test_data(self):
+        if self.is_regenerate_test_data:
+            df_test_data = self.__generate_test_data()
+        else:
+            df_test_data = pd.read_csv(self.generate_test_path)
+
+        df_test_data = df_test_data.fillna(0)
+        test_header_list = list(df_test_data.columns)
+        train_remove_key_list = ["date"]
+        for remove_key in train_remove_key_list:
+            test_header_list.remove(remove_key)
+        test_input_list = df_test_data[test_header_list].values
+
+        return test_input_list
 
     def __generate_train_and_validate_data(self):
         sorted_all_data_path = sorted(self.origin_train_path.glob("*"))
@@ -78,14 +99,29 @@ class DataUtils(object):
 
         return df_train_data, df_validate_data
 
-    def __merge_date_data(self, date_path):
+    def __generate_test_data(self):
+        df_test_data = pd.DataFrame()
+        test_path_list = list(self.origin_test_path.glob("*"))
+        for date_path in self.progress(test_path_list):
+            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")], ignore_index=True)
+
+        print(">> save all data to /datas folder.")
+        df_test_data.to_csv(self.generate_test_path, index=False)
+        print(">> generate test data success !")
+
+        return df_test_data
+
+    def __merge_date_data(self, date_path, data_type=None):
         df_non_ts = pd.read_csv(date_path / "non_ts.csv", index_col="id")
         df_non_ts = self.remove_extreme_value(df_non_ts)
         df_non_ts = self.standardization(df_non_ts)
 
-        df_y = pd.read_csv(date_path / "y.csv")
-        del df_y["date"]
-        merge_df = pd.merge(df_non_ts, df_y, on="id")
+        if data_type == "test":
+            merge_df = df_non_ts
+        else:
+            df_y = pd.read_csv(date_path / "y.csv")
+            del df_y["date"]
+            merge_df = pd.merge(df_non_ts, df_y, on="id")
 
         for ts_path in date_path.glob("ts_*.csv"):
             ts_name = ts_path.name.split(".csv")[0]
