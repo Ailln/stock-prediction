@@ -4,8 +4,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from pylab import plt
-from models import sklearn_model
 from progressbar import ProgressBar
+
+from models import sklearn_model
 
 
 class DataUtils(object):
@@ -18,7 +19,7 @@ class DataUtils(object):
         self.generate_validate_path = Path(self.config["datas"]["generate_validate_path"])
         self.generate_test_path = Path(self.config["datas"]["generate_test_path"])
 
-        self.is_regenerate_train_and_validate_data = self.config["datas"]["is_regenerate_train_and_validate_data"]
+        self.is_regenerate_train_and_validate_data = self.config["datas"]["is_regenerate_train_data"]
         self.split_validate_size = self.config["datas"]["split_validate_size"]
         self.is_regenerate_test_data = self.config["datas"]["is_regenerate_test_data"]
 
@@ -26,17 +27,14 @@ class DataUtils(object):
 
         self.progress = ProgressBar()
 
-    def get_train_and_validate_data(self):
+    def get_train_data(self):
         if self.is_regenerate_train_and_validate_data:
-            df_train_data, df_validate_data = self.__generate_train_and_validate_data()
+            df_train_data = self.__generate_train_data()
         else:
             df_train_data = pd.read_csv(self.generate_train_path)
-            if self.split_validate_size:
-                df_validate_data = pd.read_csv(self.generate_validate_path)
 
         if self.is_debug:
             print(f"\n>> train df head:\n\n{df_train_data.head()}")
-            print(f"\n>> validate df head:\n\n{df_validate_data.head()}")
 
         train_header_list = list(df_train_data.columns)
         train_remove_key_list = ["id", "date", "y"]
@@ -45,19 +43,7 @@ class DataUtils(object):
         train_input_list = df_train_data[train_header_list].values
         train_target_list = df_train_data["y"].values
 
-        if self.split_validate_size:
-            validate_header_list = list(df_validate_data.columns)
-            validate_remove_key_list = ["id", "date", "y"]
-            for remove_key in validate_remove_key_list:
-                validate_header_list.remove(remove_key)
-
-            validate_input_list = df_validate_data[validate_header_list].values
-            validate_target_list = df_validate_data["y"].values
-        else:
-            validate_input_list = []
-            validate_target_list = []
-
-        return train_input_list, train_target_list, validate_input_list, validate_target_list
+        return train_input_list, train_target_list
 
     def get_test_data(self):
         if self.is_regenerate_test_data:
@@ -75,31 +61,25 @@ class DataUtils(object):
         test_date_list = df_test_data["date"].values
         return test_input_list, test_id_list, test_date_list
 
-    def __generate_train_and_validate_data(self):
-        sorted_all_data_path = sorted(self.origin_train_path.glob("*"))
-        sorted_all_data_len = len(sorted_all_data_path)
-        print(f">> all data length: {sorted_all_data_len}")
+    def __generate_train_data(self):
+        sorted_train_path = sorted(self.origin_train_path.glob("*"))
+        sorted_train_len = len(sorted_train_path)
+        print(f">> all data length: {sorted_train_len}")
 
         if self.is_debug:
-            sorted_all_data_path = sorted_all_data_path[:10]
-            sorted_all_data_len = 10
+            sorted_train_path = sorted_train_path[:10]
 
         df_train_data = pd.DataFrame()
-        df_validate_data = pd.DataFrame()
-        print(">> concat all data")
-        for index, date_path in enumerate(self.progress(sorted_all_data_path)):
-            if index <= sorted_all_data_len * (1 - self.split_validate_size):
-                df_train_data = pd.concat([df_train_data, self.__merge_date_data(date_path)], ignore_index=True)
-            else:
-                df_validate_data = pd.concat([df_validate_data, self.__merge_date_data(date_path)],
-                                             ignore_index=True)
+        for index, date_path in enumerate(self.progress(sorted_train_path)):
+            df_train_data = pd.concat([df_train_data, self.__merge_date_data(date_path)], ignore_index=True)
 
-        print(">> save all data to /datas folder.")
-        df_train_data.to_csv(self.generate_train_path, index=False)
-        df_validate_data.to_csv(self.generate_validate_path, index=False)
-        print(">> generate train and validate data success !")
+        print(">> generate all train data success !")
 
-        return df_train_data, df_validate_data
+        if not self.is_debug:
+            df_train_data.to_csv(self.generate_train_path, index=False)
+            print(">> save all data to /datas folder.")
+
+        return df_train_data
 
     def __generate_test_data(self):
         df_test_data = pd.DataFrame()

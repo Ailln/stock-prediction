@@ -5,13 +5,13 @@ datas:
   generate_validate_path: ./datas/validate_data.csv
   generate_test_path: ./datas/test_data.csv
 
-  is_regenerate_train_and_validate_data: 1
+  is_regenerate_train_data: 0
   is_regenerate_test_data: 0
-  split_validate_size: 0.3
+  split_validate_size: 0.2
 
 models:
     model_path: ./save
-    model_name: BaggingRegressor
+    model_name: LinearRegression
     all_model_name: [
         "SGDRegressor",
         "HuberRegressor",
@@ -24,5 +24,3 @@ models:
         "RandomForestRegressor",
         "GradientBoostingRegressor"
     ]
-
-is_debug: False
