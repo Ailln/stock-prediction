@@ -9,10 +9,12 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split
 
 from utils import data_utils
+from utils import other_utils
 from utils import config_utils
 from models import sklearn_model
 
-print(f">> Start at: {datetime.datetime.now()}")
+
+print(f">> Start: {datetime.datetime.now()}")
 
 config_path = "./config.yaml"
 config = config_utils.read_config(config_path)
@@ -24,9 +26,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--run_type", type=str, default="train", choices=["train", "test"])
 parser.add_argument("--model_name", type=str, default=default_model_name, choices=all_model_name)
 parser.add_argument("--train_type", type=str, default="single", choices=["single", "all"])
-parser.add_argument("--split_validate", type=bool, default=True)
-parser.add_argument("--cross_validate", type=bool, default=False)
-parser.add_argument("--debug", type=bool, default=False, choices=[True, False])
+parser.add_argument("--split_validate", type=other_utils.bool, default=True, choices=[True, False])
+parser.add_argument("--cross_validate", type=other_utils.bool, default=False, choices=[True, False])
+parser.add_argument("--debug", type=other_utils.bool, default=False, choices=[True, False])
 args = parser.parse_args()
 print(f">> Parameters: {args}")
 
@@ -117,7 +119,8 @@ def test():
 
 if __name__ == '__main__':
     if args.run_type == "train":
-        train()
+        # train()
+        pass
     elif args.run_type == "test":
         test()
     else:
