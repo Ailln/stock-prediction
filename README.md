@@ -81,18 +81,17 @@ python -m run.sklearn
 
 ## 4 结果
 
-| 序号 | 模型类型 | 模型名称 | 无预处理 R-Square | 去极值 R-Square | 去极值 + 标准化 R-Square | 去极值 + 标准化 + 中性化 R-Square | 标准化 + 中性化 R-Square | 5折交叉验证 R-Square |
-| :-: | :- | :- | :- | :- | :- | :- | :- | :- |
-| 1 | linear | SGDRegressor | -56.071693 | -69.871678 | -54.201961 | # | # |  0.009169 |
-| 2 | linear | HuberRegressor | -58.364788 | -60.874178 | -50.952152 | # | # |  -0.001188 |
-| 3 | linear | LinearRegression | -58.458262 | -59.135412 | -51.928303 | # | # | 0.009397 |
-| 4 | svm | SVR | -6.084557 | # | # | # | # | # | 
-| 5 | svm | LinearSVR | -3.988809 | -9.662139 | -86.919508 | # | # | -0.023043 |
-| 6 | ensemble | BaggingRegressor | -5.531680 | -5.638546 | -4.308927 | -4.404751 |-4.817928 |  -0.124159 |
-| 7 | ensemble | AdaBoostRegressor | -22.696467 | -16.359532 | -13.602190 | # | # | -0.793962 |
-| 8 | ensemble | ExtraTreesRegressor | -5.649379 | -5.657962 | -4.479154 | # | # | -0.118910 |
-| 9 | ensemble | RandomForestRegressor | -5.508197 | -5.630370 | -4.320771 | -4.328046 | # | -0.124352 | 
-| 10 | ensemble | GradientBoostingRegressor | -77.255139 | -79.280552 | -63.275892 | # | # | 0.009832 |
+| 序号 | 模型类型 | 模型名称 |标准化 + 中性化 + 3折交叉验证 R-Square |
+| :-: | :- | :- | :- |
+| 1 | linear | SGDRegressor | 0.009278 |
+| 2 | linear | HuberRegressor | -0.001619 |
+| 3 | linear | LinearRegression | 0.009210 |
+| 4 | svm | LinearSVR | -0.014114 |
+| 5 | ensemble | BaggingRegressor | -0.132400 |
+| 6 | ensemble | AdaBoostRegressor | -0.794503 |
+| 7 | ensemble | ExtraTreesRegressor | -0.121669 |
+| 8 | ensemble | RandomForestRegressor | -0.132016 |
+| 9 | ensemble | GradientBoostingRegressor | 0.009432 |
 
 ## 5 其他
 

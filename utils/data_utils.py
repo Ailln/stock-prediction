@@ -190,9 +190,3 @@ class DataUtils(object):
             df_input[col] = res
 
         return df_input
-
-
-if __name__ == '__main__':
-    my_config_path = "./config.yaml"
-    du = DataUtils(my_config_path)
-    du.get_train_and_validate_data()

@@ -68,7 +68,7 @@ def train_utils(model, model_name, all_train_input, all_train_target):
     if args.split_validate:
         # 是否使用交叉验证
         if args.cross_validate:
-            r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=10, scoring='r2', n_jobs=-1)
+            r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=3, scoring='r2', n_jobs=-1)
             log = f"\n>> {model_name}\n>> ALL Cross R2: {r2_result}\n>> Mean R2: {r2_result.mean()}\n"
         else:
             train_input, validate_input, train_target, validate_target = \
@@ -78,6 +78,7 @@ def train_utils(model, model_name, all_train_input, all_train_target):
             r2_result = r2_score(validate_target, validate_preds)
             log = f"\n>> {model_name}\n>> R2: {r2_result}"
 
+        print(log)
         with open(f"{log_model_path}/{now}.log", "a") as f_log:
             f_log.write(log)
 
