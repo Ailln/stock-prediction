@@ -1,7 +1,7 @@
 import os
 import datetime
-
 import argparse
+
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.metrics import r2_score
@@ -21,6 +21,7 @@ config = config_utils.read_config(config_path)
 default_model_name = config["models"]["model_name"]
 all_model_name = config["models"]["all_model_name"]
 save_model_path = config["models"]["model_path"]
+split_size = config["datas"]["split_validate_size"]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_type", type=str, default="train", choices=["train", "test"])
@@ -66,17 +67,17 @@ def train_utils(model, model_name, all_train_input, all_train_target):
     if args.split_validate:
         # 是否使用交叉验证
         if args.cross_validate:
-            r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=5, scoring='r2', n_jobs=-1)
+            r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=10, scoring='r2', n_jobs=-1)
             print(f"\n>> {model_name} ALL R2 LIST: {r2_result}")
             print(f">> {model_name} Cross R2: {r2_result.mean()}")
         else:
-            train_input, validate_input, train_target, validate_target = train_test_split(all_train_input,
-                                                                                          all_train_target)
+            train_input, validate_input, train_target, validate_target = \
+                train_test_split(all_train_input, all_train_target, test_size=split_size)
             skm.fit(train_input, train_target)
             validate_preds = skm.predict(validate_input)
             print(validate_preds[:10])
             print(validate_target[:10])
-            r2_result = r2_score(validate_preds, validate_target)
+            r2_result = r2_score(validate_target, validate_preds)
             print(f"\n>> {model_name} R2: {r2_result}")
     else:
         skm.fit(all_train_input, all_train_target)
@@ -89,9 +90,12 @@ def test():
     print(">> data processing...")
     test_input, test_id, test_date = du.get_test_data()
 
-    model_name = config["models"]["model_name"]
-    model = joblib.load(config["models"]["model_path"] + f"/{model_name}.m")
+    model_name = args.model_name
+    save_path = f"{save_model_path}/{model_name}.m"
+    print(f">> read model from {save_path}...")
+    model = joblib.load(save_path)
     skm = model.sklearn_model(model_name)
+
     print(">> predict...\n")
     test_preds = skm.predict(test_input)
 
@@ -119,8 +123,7 @@ def test():
 
 if __name__ == '__main__':
     if args.run_type == "train":
-        # train()
-        pass
+        train()
     elif args.run_type == "test":
         test()
     else:
