@@ -13,14 +13,15 @@ from utils import other_utils
 from utils import config_utils
 from models import sklearn_model
 
-
-print(f">> Start: {datetime.datetime.now()}")
+now = datetime.datetime.now()
+print(f">> Start: {now}")
 
 config_path = "./config.yaml"
 config = config_utils.read_config(config_path)
 default_model_name = config["models"]["model_name"]
 all_model_name = config["models"]["all_model_name"]
 save_model_path = config["models"]["model_path"]
+log_model_path = config["models"]["log_path"]
 split_size = config["datas"]["split_validate_size"]
 
 parser = argparse.ArgumentParser()
@@ -68,17 +69,18 @@ def train_utils(model, model_name, all_train_input, all_train_target):
         # 是否使用交叉验证
         if args.cross_validate:
             r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=10, scoring='r2', n_jobs=-1)
-            print(f"\n>> {model_name} ALL R2 LIST: {r2_result}")
-            print(f">> {model_name} Cross R2: {r2_result.mean()}")
+            log = f"\n>> {model_name}\n>> ALL Cross R2: {r2_result}\n>> Mean R2: {r2_result.mean()}\n"
         else:
             train_input, validate_input, train_target, validate_target = \
                 train_test_split(all_train_input, all_train_target, test_size=split_size)
             skm.fit(train_input, train_target)
             validate_preds = skm.predict(validate_input)
-            print(validate_preds[:10])
-            print(validate_target[:10])
             r2_result = r2_score(validate_target, validate_preds)
-            print(f"\n>> {model_name} R2: {r2_result}")
+            log = f"\n>> {model_name}\n>> R2: {r2_result}"
+
+        with open(f"{log_model_path}/{now}.log", "a") as f_log:
+            f_log.write(log)
+
     else:
         skm.fit(all_train_input, all_train_target)
         save_path = f"{save_model_path}/{model_name}.m"

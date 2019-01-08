@@ -11,6 +11,7 @@ datas:
 
 models:
     model_path: ./save
+    log_path: ./logs
     model_name: LinearRegression
     all_model_name: [
         "SGDRegressor",

@@ -109,3 +109,4 @@ venv.bak/
 # my
 /datas/*.csv
 /save/
+/logs/*.log
