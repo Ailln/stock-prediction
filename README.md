@@ -81,17 +81,17 @@ python -m run.sklearn
 
 ## 4 结果
 
-| 序号 | 模型类型 | 模型名称 |标准化 + 中性化 + 3折交叉验证 R-Square |
-| :-: | :- | :- | :- |
-| 1 | linear | SGDRegressor | 0.009278 |
-| 2 | linear | HuberRegressor | -0.001619 |
-| 3 | linear | LinearRegression | 0.009210 |
-| 4 | svm | LinearSVR | -0.014114 |
-| 5 | ensemble | BaggingRegressor | -0.132400 |
-| 6 | ensemble | AdaBoostRegressor | -0.794503 |
-| 7 | ensemble | ExtraTreesRegressor | -0.121669 |
-| 8 | ensemble | RandomForestRegressor | -0.132016 |
-| 9 | ensemble | GradientBoostingRegressor | 0.009432 |
+| 序号 | 模型类型 | 模型名称 |标准化 R-Square | 标准化 + 中性化 R-Square |  标准化 + 中性化 + 去极值 R-Square | 
+| :-: | :- | :- | :- | :- | :- |
+| 1 | linear | SGDRegressor | 0.009278 | 0.007107 | 0.009471 |
+| 2 | linear | HuberRegressor | -0.001619 | -0.002465 | -0.001330 |
+| 3 | linear | LinearRegression | 0.009210 | 0.007160 | 0.010128 |
+| 4 | svm | LinearSVR | -0.014114 | -0.009051 | -0.110621 |
+| 5 | ensemble | BaggingRegressor | -0.132400 | -0.143860 | -0.128520 |
+| 6 | ensemble | AdaBoostRegressor | -0.794503 | -0.530176 | -0.805070 |
+| 7 | ensemble | ExtraTreesRegressor | -0.121669 | -0.133189 | -0.123891 |
+| 8 | ensemble | RandomForestRegressor | -0.132016 | -0.144166 | -0.128699 |
+| 9 | ensemble | GradientBoostingRegressor | 0.009432 | 0.007274 | 0.010591 |
 
 ## 5 其他
 

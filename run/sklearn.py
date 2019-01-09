@@ -22,19 +22,32 @@ default_model_name = config["models"]["model_name"]
 all_model_name = config["models"]["all_model_name"]
 save_model_path = config["models"]["model_path"]
 log_model_path = config["models"]["log_path"]
-split_size = config["datas"]["split_validate_size"]
+split_validate_size = config["datas"]["split_validate_size"]
+default_standardization = config["datas"]["is_standardization"]
+default_neutralization = config["datas"]["is_neutralization"]
+default_remove_extreme = config["datas"]["is_remove_extreme"]
+default_cross_validate = config["datas"]["is_cross_validate"]
+default_split_validate = config["datas"]["is_split_validate"]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--run_type", type=str, default="train", choices=["train", "test"])
 parser.add_argument("--model_name", type=str, default=default_model_name, choices=all_model_name)
 parser.add_argument("--train_type", type=str, default="single", choices=["single", "all"])
-parser.add_argument("--split_validate", type=other_utils.bool, default=True, choices=[True, False])
-parser.add_argument("--cross_validate", type=other_utils.bool, default=False, choices=[True, False])
+parser.add_argument("--is_std", type=other_utils.bool, default=default_standardization, choices=[True, False])
+parser.add_argument("--is_ntl", type=other_utils.bool, default=default_neutralization, choices=[True, False])
+parser.add_argument("--is_remove_extreme", type=other_utils.bool, default=default_remove_extreme, choices=[True, False])
+parser.add_argument("--is_cross_val", type=other_utils.bool, default=default_cross_validate, choices=[True, False])
+parser.add_argument("--is_split_val", type=other_utils.bool, default=default_split_validate, choices=[True, False])
 parser.add_argument("--debug", type=other_utils.bool, default=False, choices=[True, False])
 args = parser.parse_args()
 print(f">> Parameters: {args}")
+with open(f"{log_model_path}/{now}.log", "a") as f_log:
+    f_log.write(str(args))
 
 config["is_debug"] = args.debug
+config["is_std"] = args.is_std
+config["is_ntl"] = args.is_ntl
+config["is_remove_extreme"] = args.is_remove_extreme
 du = data_utils.DataUtils(config)
 
 
@@ -65,14 +78,14 @@ def train_utils(model, model_name, all_train_input, all_train_target):
     # 是否切分出验证集
     # 在选择出模型后，需要使用训练集对模型进行全量训练
     # 此时要保存模型，以供预测时使用
-    if args.split_validate:
+    if args.is_split_val:
         # 是否使用交叉验证
-        if args.cross_validate:
+        if args.is_cross_val:
             r2_result = cross_val_score(skm, all_train_input, all_train_target, cv=3, scoring='r2', n_jobs=-1)
             log = f"\n>> {model_name}\n>> ALL Cross R2: {r2_result}\n>> Mean R2: {r2_result.mean()}\n"
         else:
             train_input, validate_input, train_target, validate_target = \
-                train_test_split(all_train_input, all_train_target, test_size=split_size)
+                train_test_split(all_train_input, all_train_target, test_size=split_validate_size)
             skm.fit(train_input, train_target)
             validate_preds = skm.predict(validate_input)
             r2_result = r2_score(validate_target, validate_preds)
