@@ -2,7 +2,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from pylab import plt
 from progressbar import ProgressBar
 
@@ -60,9 +59,11 @@ class DataUtils(object):
 
         df_test_data = df_test_data.fillna(0)
         test_header_list = list(df_test_data.columns)
+
         train_remove_key_list = ["date", "id"]
         for remove_key in train_remove_key_list:
-            test_header_list.remove(remove_key)
+            if remove_key in test_header_list:
+                test_header_list.remove(remove_key)
         test_input_list = df_test_data[test_header_list].values
         test_id_list = df_test_data["id"].values
         test_date_list = df_test_data["date"].values
@@ -92,7 +93,7 @@ class DataUtils(object):
         df_test_data = pd.DataFrame()
         test_path_list = list(self.origin_test_path.glob("*"))
         for date_path in self.progress(test_path_list):
-            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")])
+            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")], sort=False)
 
         print(">> save all data to /datas folder.")
         df_test_data.to_csv(self.generate_test_path)

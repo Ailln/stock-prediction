@@ -5,7 +5,7 @@ datas:
   generate_validate_path: ./datas/validate_data.csv
   generate_test_path: ./datas/test_data.csv
 
-  is_regenerate_train_data: 1
+  is_regenerate_train_data: 0
   is_regenerate_test_data: 0
   split_validate_size: 0.1
 
@@ -18,7 +18,7 @@ datas:
 models:
     model_path: ./save
     log_path: ./logs
-    model_name: LinearRegression
+    model_name: GradientBoostingRegressor
     all_model_name: [
         "SGDRegressor",
         "HuberRegressor",
