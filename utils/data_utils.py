@@ -2,7 +2,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 from pylab import plt
 from progressbar import ProgressBar
 
@@ -19,16 +18,20 @@ class DataUtils(object):
         self.generate_validate_path = Path(self.config["datas"]["generate_validate_path"])
         self.generate_test_path = Path(self.config["datas"]["generate_test_path"])
 
-        self.is_regenerate_train_and_validate_data = self.config["datas"]["is_regenerate_train_data"]
+        self.is_regenerate_train_data = self.config["datas"]["is_regenerate_train_data"]
         self.split_validate_size = self.config["datas"]["split_validate_size"]
         self.is_regenerate_test_data = self.config["datas"]["is_regenerate_test_data"]
 
         self.is_debug = self.config["is_debug"]
+        self.is_std = self.config["is_std"]
+        self.is_ntl = self.config["is_ntl"]
+        self.is_remove_extreme = self.config["is_remove_extreme"]
+        self.is_plot = 0
 
         self.progress = ProgressBar()
 
     def get_train_data(self):
-        if self.is_regenerate_train_and_validate_data:
+        if self.is_regenerate_train_data:
             df_train_data = self.__generate_train_data()
         else:
             df_train_data = pd.read_csv(self.generate_train_path)
@@ -50,12 +53,17 @@ class DataUtils(object):
             df_test_data = self.__generate_test_data()
         else:
             df_test_data = pd.read_csv(self.generate_test_path)
-        print(df_test_data.head())
+
+        if self.is_debug:
+            print(f"\n>> test df head:\n\n{df_test_data.head()}")
+
         df_test_data = df_test_data.fillna(0)
         test_header_list = list(df_test_data.columns)
+
         train_remove_key_list = ["date", "id"]
         for remove_key in train_remove_key_list:
-            test_header_list.remove(remove_key)
+            if remove_key in test_header_list:
+                test_header_list.remove(remove_key)
         test_input_list = df_test_data[test_header_list].values
         test_id_list = df_test_data["id"].values
         test_date_list = df_test_data["date"].values
@@ -85,7 +93,7 @@ class DataUtils(object):
         df_test_data = pd.DataFrame()
         test_path_list = list(self.origin_test_path.glob("*"))
         for date_path in self.progress(test_path_list):
-            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")])
+            df_test_data = pd.concat([df_test_data, self.__merge_date_data(date_path, "test")], sort=False)
 
         print(">> save all data to /datas folder.")
         df_test_data.to_csv(self.generate_test_path)
@@ -95,9 +103,12 @@ class DataUtils(object):
 
     def __merge_date_data(self, date_path, data_type=None):
         df_non_ts = pd.read_csv(date_path / "non_ts.csv", index_col="id")
-        # df_non_ts = self.remove_extreme_value(df_non_ts)
-        df_non_ts = self.standardization(df_non_ts)
-        self.neutralization(df_non_ts)
+        if self.is_remove_extreme:
+            df_non_ts = self.remove_extreme_value(df_non_ts)
+        if self.is_ntl:
+            df_non_ts = self.neutralization(df_non_ts)
+        if self.is_std:
+            df_non_ts = self.standardization(df_non_ts)
 
         if data_type == "test":
             merge_df = df_non_ts
@@ -112,8 +123,10 @@ class DataUtils(object):
             date = df_ts["date"]
             del df_ts["date"]
 
-            # df_ts = self.remove_extreme_value(df_ts)
-            df_ts = self.standardization(df_ts)
+            if self.is_remove_extreme:
+                df_ts = self.remove_extreme_value(df_ts)
+            if self.is_std:
+                df_ts = self.standardization(df_ts)
 
             df_ts_std = self.__get_std(df_ts, ts_name)
             merge_df = pd.merge(merge_df, df_ts_std, on="id")
@@ -143,24 +156,30 @@ class DataUtils(object):
         df_output = df_input.T[1:22].mean().to_frame(name=index_name+"_mean_0_20")
         return df_output
 
-    @staticmethod
-    def remove_extreme_value(df_input):
-        # del df_input["date"]
-        # del df_input["flag"]
-        #
-        # fig, (ax0, ax1) = plt.subplots(2, 1, sharey="all")
-        # ax0.set_title('BEFORE /20130201/non_ts.csv remove extreme value')
-        # df_input.plot(ax=ax0)
+    def remove_extreme_value(self, df_input):
+        if self.is_plot:
+            del df_input["date"]
+            del df_input["flag"]
 
-        desc = df_input.describe()
-        mean_add_3std = desc.loc['mean'] + desc.loc['std'] * 3
-        mean_minus_3std = desc.loc['mean'] - desc.loc['std'] * 3
-        df_input = df_input.where(df_input < mean_add_3std, mean_add_3std, axis=1)
-        df_input = df_input.where(df_input > mean_minus_3std, mean_minus_3std, axis=1)
+            fig, (ax0, ax1) = plt.subplots(2, 1, sharey="all")
+            ax0.set_title('BEFORE /20130201/non_ts.csv remove extreme value')
+            df_input.plot(ax=ax0)
 
-        # ax1.set_title('AFTER /20130201/non_ts.csv remove extreme value')
-        # df_input.plot(ax=ax1)
-        # plt.show()
+            desc = df_input.describe()
+            mean_add_3std = desc.loc['mean'] + desc.loc['std'] * 3
+            mean_minus_3std = desc.loc['mean'] - desc.loc['std'] * 3
+            df_input = df_input.where(df_input < mean_add_3std, mean_add_3std, axis=1)
+            df_input = df_input.where(df_input > mean_minus_3std, mean_minus_3std, axis=1)
+
+            ax1.set_title('AFTER /20130201/non_ts.csv remove extreme value')
+            df_input.plot(ax=ax1)
+            plt.show()
+        else:
+            desc = df_input.describe()
+            mean_add_3std = desc.loc['mean'] + desc.loc['std'] * 3
+            mean_minus_3std = desc.loc['mean'] - desc.loc['std'] * 3
+            df_input = df_input.where(df_input < mean_add_3std, mean_add_3std, axis=1)
+            df_input = df_input.where(df_input > mean_minus_3std, mean_minus_3std, axis=1)
 
         return df_input
 
@@ -178,6 +197,7 @@ class DataUtils(object):
         cols = list(df_input.columns)
         model = sklearn_model.Model()
         skm = model.sklearn_model("LinearRegression")
+
         cols.remove("date")
         cols.remove("flag")
         for col in cols:
@@ -190,9 +210,3 @@ class DataUtils(object):
             df_input[col] = res
 
         return df_input
-
-
-if __name__ == '__main__':
-    my_config_path = "./config.yaml"
-    du = DataUtils(my_config_path)
-    du.get_train_and_validate_data()

@@ -6,10 +6,9 @@ from sklearn import linear_model
 class Model(object):
     def __init__(self):
         self.model_dict = {
-            "SGDRegressor": linear_model.SGDRegressor(),
+            "SGDRegressor": linear_model.SGDRegressor(max_iter=1000),
             "HuberRegressor": linear_model.HuberRegressor(),
             "LinearRegression": linear_model.LinearRegression(),
-            "SVR": svm.SVR(),
             "LinearSVR": svm.LinearSVR(),
             "BaggingRegressor": ensemble.BaggingRegressor(),
             "AdaBoostRegressor": ensemble.AdaBoostRegressor(),
