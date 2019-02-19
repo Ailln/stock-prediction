@@ -3,6 +3,8 @@ import datetime
 import argparse
 
 import pandas as pd
+import numpy as np
+import pylab as pl
 from sklearn.externals import joblib
 from sklearn.metrics import r2_score
 from sklearn.model_selection import cross_val_score
@@ -111,6 +113,18 @@ def test():
     print(f">> read model from {save_path}...")
     model = joblib.load(save_path)
     skm = model.sklearn_model(model_name)
+
+    fi = skm.feature_importances_
+    print(f">> Feature Importances:\n {fi}")
+    x = [i+1 for i in range(len(fi))]
+    pl.plot(x, fi, "b")
+    pl.plot(x, fi, "or")
+    pl.title("Gradient Boosting Regressor Feature Importances")
+    pl.xlabel("feature index")
+    pl.ylabel("feature importances")
+    pl.xticks(np.arange(1, 33, step=1))
+    pl.show()
+    print("please close image to predict.")
 
     print(">> predict...\n")
     test_preds = skm.predict(test_input)
