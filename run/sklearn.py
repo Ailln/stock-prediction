@@ -89,9 +89,33 @@ def train_utils(model, model_name, all_train_input, all_train_target):
             train_input, validate_input, train_target, validate_target = \
                 train_test_split(all_train_input, all_train_target, test_size=split_validate_size)
             skm.fit(train_input, train_target)
+
+            # restore model
+            # save_path = f"{save_model_path}/{model_name}.m"
+            # print(f">> read model from {save_path}...")
+            # model = joblib.load(save_path)
+            # skm = model.sklearn_model(model_name)
+
             validate_preds = skm.predict(validate_input)
+
             r2_result = r2_score(validate_target, validate_preds)
-            log = f"\n>> {model_name}\n>> R2: {r2_result}"
+            log = f"\n>> {model_name}\n>> All R2: {r2_result}"
+
+            preds = []
+            for i in range(len(validate_preds)):
+                preds.append([i, validate_preds[i]])
+
+            sort_result = sorted(preds, key=lambda x: x[1])
+            sort_result.reverse()
+            new_validate_preds = []
+            new_validate_target = []
+            for index_value in sort_result[:1000]:
+                index, value = index_value
+                new_validate_target.append(validate_target[index])
+                new_validate_preds.append(value)
+
+            new_r2_result = r2_score(new_validate_target, new_validate_preds)
+            log = log + f"\n>> 1000 R2: {new_r2_result}"
 
         print(log)
         with open(f"{log_model_path}/{now}.log", "a") as f_log:
