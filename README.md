@@ -62,10 +62,10 @@
 
 ## 3 使用方法
 
-本项目使用的 Python 版本必须大于 3.6.0，环境配置参考[这里](https://www.v2ai.cn/linux/2018/04/29/LX-2.html)。
+本项目使用的 Python 版本必须大于 3.6.0，环境配置参考[这里](https://www.v2ai.cn/2018/04/29/python/2-python-install/)。
 
 ```bash
-git clone https://github.com/HaveTwoBrush/stock-prediction.git
+git clone https://github.com/Ailln/stock-prediction.git
 
 cd stock-prediction
 
